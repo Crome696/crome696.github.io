@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 const tailscaleAllowedHosts = ["blaubeere", ".ts.net"];
 
 export default defineConfig({
-  base: "/gitfolio/",
+  base: "/",
   plugins: [react()],
   server: {
     host: "0.0.0.0",

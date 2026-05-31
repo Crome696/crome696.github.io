@@ -18,7 +18,7 @@ npm install
 npm run dev
 ```
 
-The app is configured for the GitHub Pages project path `/gitfolio/`.
+The app is configured for the GitHub Pages user site root at `https://crome696.github.io/`.
 
 ## Quality Gates
 

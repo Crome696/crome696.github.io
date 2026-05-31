@@ -6,12 +6,12 @@
     <title>Crome696 | Redirecting</title>
     <script>
       (function () {
-        var base = "/gitfolio/";
+        var base = "/";
         var path = window.location.pathname;
         var route = path.indexOf(base) === 0 ? path.slice(base.length) : "";
         var target = "/" + route + window.location.search + window.location.hash;
 
-        window.sessionStorage.setItem("gitfolio:redirect", target);
+        window.sessionStorage.setItem("crome696:redirect", target);
         window.location.replace(base);
       })();
     </script>

@@ -11,10 +11,10 @@ import App from "./App";
 import "./styles.css";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
-const pendingRedirect = window.sessionStorage.getItem("gitfolio:redirect");
+const pendingRedirect = window.sessionStorage.getItem("crome696:redirect");
 
 if (pendingRedirect) {
-  window.sessionStorage.removeItem("gitfolio:redirect");
+  window.sessionStorage.removeItem("crome696:redirect");
   const normalizedPath = pendingRedirect.startsWith("/")
     ? pendingRedirect
     : `/${pendingRedirect}`;
