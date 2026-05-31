@@ -209,6 +209,7 @@ export const projects: Project[] = [
     slug: "client-api",
     title: "Client-API",
     category: "WinAPI Automation Research",
+    period: "2015 to 2022",
     summary:
       "A .NET-based research library for controlling external Windows applications through WinAPI, OCR, and supporting automation tools.",
     challenge:
