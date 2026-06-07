@@ -3,14 +3,13 @@ import clientApiPreview from "../assets/client-api-preview.png";
 import mediamultiversePreview from "../assets/mediamultiverse-preview.png";
 import rebirthuoPreview from "../assets/rebirthuo-preview.png";
 import scriptsdkPreview from "../assets/scriptsdk-preview.png";
+import stealthClientPreview from "../assets/stealth-client-preview.png";
 import {
   Braces,
   Code2,
   Database,
   Globe2,
   Layers3,
-  Mail,
-  MapPin,
   MonitorCog,
   Sparkles,
   Zap,
@@ -31,7 +30,6 @@ export type Profile = {
   summary: string;
   location: string;
   socials: LinkItem[];
-  contactLinks: LinkItem[];
 };
 
 export type Project = {
@@ -48,6 +46,13 @@ export type Project = {
   links: LinkItem[];
   accent: "cyan" | "lime" | "coral" | "steel";
   image?: ProjectImage;
+};
+
+export type ProjectTimelineItem = {
+  projectSlug: string;
+  period: string;
+  narrative: string;
+  tags: string[];
 };
 
 export type ProjectImage = {
@@ -95,17 +100,6 @@ export const profile: Profile = {
       external: true,
     },
   ],
-  contactLinks: [
-    {
-      label: "GitHub",
-      href: "https://github.com/Crome696",
-      external: true,
-    },
-    {
-      label: "Contact channel coming soon",
-      href: "/contact",
-    },
-  ],
 };
 
 export const heroTechStackItems = [
@@ -142,9 +136,9 @@ export const projects: Project[] = [
     slug: "rebirthuo",
     title: "RebirthUO",
     category: "Ultima Online Freeshard",
-    period: "2016 to 2017",
+    period: "2014 to 2017",
     summary:
-      "A customized Ultima Online free shard based on ServUO, operated and maintained by a team around 2016 to 2017.",
+      "A customized Ultima Online free shard based on ServUO, operated and maintained by a team from 2014 to 2017.",
     challenge:
       "RebirthUO brought together community operations, shard hosting, and custom gameplay design to offer players a tailored Ultima Online experience beyond the default ServUO setup.",
     role:
@@ -152,7 +146,7 @@ export const projects: Project[] = [
     roles: ["Tech Lead", "Lead Developer", "Game Master"],
     stack: ["C#", ".NET", "ServUO", "RunUO", "Shard operations"],
     highlights: [
-      "Runnable service hosted and maintained by the team from 2016 to 2017.",
+      "Runnable service hosted and maintained by the team from 2014 to 2017.",
       "Customized gameplay experience using ideas and features from RunUO and ServUO.",
       "Community activity reached up to 50 players online at the same time.",
       "Player-focused additions such as newbie armor, skill and stat bonuses, and house placement options.",
@@ -163,6 +157,41 @@ export const projects: Project[] = [
     image: {
       src: rebirthuoPreview,
       alt: "RebirthUO project banner",
+      ...projectBannerImageBase,
+      objectPosition: "center",
+    },
+  },
+  {
+    slug: "stealth-client",
+    title: "Stealth Client",
+    category: "Ultima Online Automation Client",
+    period: "2010 to 2022",
+    summary:
+      "A specialized Ultima Online client and scripting environment for automating player actions through Pascal Script, Delphi, Python, and .NET-based tooling.",
+    challenge:
+      "Stealth Client set out to provide a universal, resource-light automation client for Ultima Online, combining script execution, a built-in editor and debugger, pathfinding, map tooling, proxy support, and a broad script API.",
+    role:
+      "Used, tested, developed with, and supported the Stealth Client ecosystem from 2010 to 2022, working across Pascal Script, Delphi, Python, and .NET-based integrations.",
+    roles: ["User", "Tester", "Developer", "Supporter"],
+    stack: ["Pascal Script", "Delphi", "Python", ".NET", "C#", "Stealth-Client API", "Ultima Online"],
+    highlights: [
+      "Worked with the client and its scripting ecosystem over a long-running 2010 to 2022 period.",
+      "Used Pascal Script, Delphi, Python, and .NET while building and testing automation workflows.",
+      "Explored a client environment with built-in script editing, syntax highlighting, and debugging support.",
+      "Worked around Stealth Client's pathfinding, map tooling, proxy support, and extensive script API surface.",
+      "Supported users and community workflows around scripting, testing, and practical client usage.",
+    ],
+    links: [
+      {
+        label: "Stealth Client about",
+        href: "https://stealth.od.ua/about/",
+        external: true,
+      },
+    ],
+    accent: "steel",
+    image: {
+      src: stealthClientPreview,
+      alt: "Stealth Client project banner",
       ...projectBannerImageBase,
       objectPosition: "center",
     },
@@ -206,19 +235,19 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "client-api",
-    title: "Client-API",
+    slug: "client-sdk",
+    title: "Client-SDK",
     category: "WinAPI Automation Research",
     period: "2015 to 2022",
     summary:
       "A .NET-based research library for controlling external Windows applications through WinAPI, OCR, and supporting automation tools.",
     challenge:
-      "Client-API explored how Windows applications and mobile-market games running on Windows could be analyzed and controlled through screen recognition, WinAPI integration, and carefully scoped automation workflows.",
+      "Client-SDK explored how Windows applications and mobile-market games running on Windows could be analyzed and controlled through screen recognition, WinAPI integration, and carefully scoped automation workflows.",
     role:
       "Designed the automation framework, built the .NET library surface, and created supporting Client-Tools for configuration, code generation, image validation, and encryption.",
     stack: [".NET", ".NET 4.8", ".NET Core", "C#", "WinAPI", "OCR", "Windows Automation"],
     highlights: [
-      "Client-API provided the library functions needed to interact with target Windows applications.",
+      "Client-SDK provided the library functions needed to interact with target Windows applications.",
       "Client-Tools added configuration workflows, code generation, image validation, and encryption capabilities.",
       "Used WinAPI to manipulate and control external applications running on Windows.",
       "Incorporated OCR to read and interpret text or visual elements from target applications.",
@@ -237,7 +266,7 @@ export const projects: Project[] = [
     accent: "coral",
     image: {
       src: clientApiPreview,
-      alt: "Client-API automation research banner",
+      alt: "Client-SDK automation research banner",
       ...projectBannerImageBase,
       objectPosition: "center",
     },
@@ -246,6 +275,7 @@ export const projects: Project[] = [
     slug: "mediamultiverse",
     title: "MediaMultiVerse",
     category: "Media Archiving Platform",
+    period: "Since 2024",
     summary:
       "A closed-source application for crawling, organizing, and archiving media from different websites.",
     challenge:
@@ -285,6 +315,44 @@ export const projects: Project[] = [
       alt: "MediaMultiVerse project banner",
       ...projectBannerImageBase,
     },
+  },
+];
+
+export const projectTimelineItems: ProjectTimelineItem[] = [
+  {
+    projectSlug: "mediamultiverse",
+    period: "Since 2024",
+    narrative:
+      "Private media archiving platform with Angular, Spring Boot, OpenAPI contracts, and browser flows.",
+    tags: ["Angular", "Spring", "Docker"],
+  },
+  {
+    projectSlug: "scriptsdk",
+    period: "2015 to 2022",
+    narrative:
+      "External API design around Stealth-Client automation, later modernized with Java and Spring Boot.",
+    tags: [".NET", "Java 17", "API"],
+  },
+  {
+    projectSlug: "client-sdk",
+    period: "2015 to 2022",
+    narrative:
+      "Research into Windows application control through WinAPI, OCR, image validation, and supporting tools.",
+    tags: ["WinAPI", "OCR", "Tools"],
+  },
+  {
+    projectSlug: "rebirthuo",
+    period: "2014 to 2017",
+    narrative:
+      "Live shard operations, community responsibility, and custom Ultima Online gameplay systems.",
+    tags: ["C#", "ServUO", "Ops"],
+  },
+  {
+    projectSlug: "stealth-client",
+    period: "2010 to 2022",
+    narrative:
+      "Long-running Stealth Client usage, testing, development, and support around Ultima Online scripting.",
+    tags: ["Pascal Script", "Python", ".NET"],
   },
 ];
 
@@ -330,7 +398,6 @@ export const navItems = [
   { label: "Projects", href: "/projects" },
   { label: "Profile", href: "/profile" },
   { label: "Stack", href: "/stack" },
-  { label: "Contact", href: "/contact" },
 ];
 
 export const profileSections: ProfileSection[] = [
@@ -397,27 +464,5 @@ export const beyondCodeItems: ProfileListItem[] = [
   {
     title: "Nature and music",
     copy: "Exploring nature through a hiking association and singing with a local choral society.",
-  },
-];
-
-export const contactOptions = [
-  {
-    title: "GitHub",
-    copy: "Follow the public profile, experiments, notes, and future repositories.",
-    href: "https://github.com/Crome696",
-    external: true,
-    icon: Code2,
-  },
-  {
-    title: "Contact",
-    copy: "A direct contact channel can be added when the public details are ready.",
-    href: "/contact",
-    icon: Mail,
-  },
-  {
-    title: "Location",
-    copy: "Based in Rhineland-Palatinate, Germany.",
-    href: "/profile",
-    icon: MapPin,
   },
 ];

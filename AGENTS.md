@@ -14,7 +14,7 @@
 - This is a private Vite, React, and TypeScript portfolio app for the public identity `Crome696`.
 - The app is configured as a GitHub Pages user site at `https://crome696.github.io/` with `base: "/"`.
 - The main application routes live in `src/App.tsx`.
-- Portfolio profile, projects, stack items, navigation, and contact content live in `src/data/content.ts`.
+- Portfolio profile, projects, stack items, and navigation live in `src/data/content.ts`.
 - Project images live in `src/assets/` and render through `src/components/ProjectImageFrame.tsx`.
 - `public/404.html` stores deep-link redirects in session storage so GitHub Pages can serve React Router routes.
 

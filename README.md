@@ -1,13 +1,13 @@
 # Crome696 Gitfolio
 
 A polished multi-page GitHub Pages portfolio for the public identity `Crome696`.
-It presents selected projects, a professional profile, stack focus areas, and public contact paths through a Vite, React, and TypeScript single-page app.
+It presents selected projects, a professional profile, and stack focus areas through a Vite, React, and TypeScript single-page app.
 
 The production site is configured for the GitHub Pages user-site root at `https://crome696.github.io/`.
 
 ## Features
 
-- Responsive portfolio shell with home, projects, project detail, profile, stack, and contact routes.
+- Responsive portfolio shell with home, projects, project detail, profile, and stack routes.
 - Centralized profile and project content in `src/data/content.ts`.
 - Reusable project image rendering through `ProjectImageFrame`.
 - Self-hosted Inter and JetBrains Mono fonts through Fontsource.
@@ -71,7 +71,7 @@ npm run preview
 ```
 
 - `src/App.tsx` defines routes, layout components, cards, pages, navigation, and the footer.
-- `src/data/content.ts` is the main source for profile, project, stack, navigation, and contact data.
+- `src/data/content.ts` is the main source for profile, project, stack, and navigation data.
 - `src/components/ProjectImageFrame.tsx` provides image framing and empty-image fallback rendering for projects.
 - `src/styles.css` contains the visual system, responsive layout, and route/page styling.
 - `public/404.html` redirects GitHub Pages deep links back into the SPA.

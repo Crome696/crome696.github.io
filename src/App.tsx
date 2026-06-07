@@ -1,4 +1,4 @@
-import { ExternalLink, Menu, MoveRight, X } from "lucide-react";
+import { ArrowLeft, ExternalLink, Menu, MoveRight, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   Link,
@@ -7,16 +7,17 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
   useParams,
 } from "react-router-dom";
 import {
   beyondCodeItems,
-  contactOptions,
   heroTechStackItems,
   navItems,
   profile,
   profileSections,
   professionalFocusItems,
+  projectTimelineItems,
   projects,
   stackItems,
   type LinkItem,
@@ -37,7 +38,6 @@ function App() {
           <Route path="/projects/:slug" element={<ProjectDetailPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/stack" element={<StackPage />} />
-          <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
@@ -169,23 +169,59 @@ function ProjectsPage() {
     <PageShell
       eyebrow="// projects"
       title="Selected projects"
-      summary="A focused overview of engineering work across game-server operations, external APIs, Windows automation research, and media tooling."
+      summary="A focused overview of engineering work across game-server operations, client scripting, external APIs, Windows automation research, and media tooling."
     >
-      <div className="project-grid project-grid-wide">
-        {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} prominent />
-        ))}
-      </div>
+      <section className="projects-stage" aria-label="Project timeline and case studies">
+        <ProjectTimelineShowcase />
+      </section>
     </PageShell>
+  );
+}
+
+function ProjectTimelineShowcase() {
+  return (
+    <section className="project-timeline" aria-label="Project timeline">
+      <div className="project-timeline-track">
+        {projectTimelineItems.map((item) => {
+          const project = projects.find((candidate) => candidate.slug === item.projectSlug);
+
+          if (!project) {
+            return null;
+          }
+
+          return (
+            <div className={`project-timeline-row accent-${project.accent}`} key={item.projectSlug}>
+              <div className="project-timeline-marker">
+                <time>{item.period}</time>
+              </div>
+              <ProjectCard project={project} prominent />
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
 function ProjectDetailPage() {
   const { slug } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const project = useMemo(
     () => projects.find((candidate) => candidate.slug === slug),
     [slug],
   );
+  const cameFromProjects =
+    (location.state as { fromProjects?: boolean } | null)?.fromProjects === true;
+
+  const handleBackToProjects = () => {
+    if (cameFromProjects) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/projects");
+  };
 
   if (!project) {
     return <Navigate to="/projects" replace />;
@@ -193,6 +229,12 @@ function ProjectDetailPage() {
 
   return (
     <PageShell eyebrow={project.category} title={project.title} summary={project.summary}>
+      <div className="detail-navigation">
+        <button className="detail-back-button" type="button" onClick={handleBackToProjects}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          Back to projects
+        </button>
+      </div>
       <div className="detail-layout">
         <div className="detail-main">
           <ProjectImageFrame image={project.image} title={project.title} large />
@@ -316,34 +358,6 @@ function StackPage() {
   );
 }
 
-function ContactPage() {
-  return (
-    <PageShell
-      eyebrow="// contact"
-      title="Open a conversation through public channels"
-      summary="The public GitHub profile remains the main contact surface until direct contact details are added."
-    >
-      <div className="contact-grid">
-        {contactOptions.map((option) => (
-          <article className="contact-card" key={option.title}>
-            <option.icon size={22} />
-            <h2>{option.title}</h2>
-            <p>{option.copy}</p>
-            <SmartLink
-              link={{
-                label: option.external ? "Open profile" : "View details",
-                href: option.href,
-                external: option.external,
-              }}
-              className="text-link"
-            />
-          </article>
-        ))}
-      </div>
-    </PageShell>
-  );
-}
-
 function ProfileListSection({
   eyebrow,
   title,
@@ -408,6 +422,7 @@ function ProjectCard({
       <Link
         className="project-card-hit-area"
         to={`/projects/${project.slug}`}
+        state={{ fromProjects: true }}
         aria-label={`Open ${project.title} project`}
       >
         <span className="sr-only">Open {project.title} project</span>
