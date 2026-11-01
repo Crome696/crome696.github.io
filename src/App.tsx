@@ -1,5 +1,5 @@
 import { ArrowLeft, ExternalLink, Menu, MoveRight, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Link,
   NavLink,
@@ -27,9 +27,20 @@ import {
 } from "./data/content";
 import { ProjectImageFrame } from "./components/ProjectImageFrame";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <div className="site-shell">
+      <ScrollToTop />
       <Header />
       <main>
         <Routes>
@@ -48,13 +59,12 @@ function App() {
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
 
   return (
     <header className="site-header">
       <Link className="brand-mark" to="/" onClick={() => setIsOpen(false)}>
-        <span>Crome</span>
-        <span>696</span>
+        <span className="brand-dot" aria-hidden="true" />
+        crome696
       </Link>
       <button
         className="nav-toggle"
@@ -70,11 +80,7 @@ function Header() {
           <NavLink
             key={item.href}
             to={item.href}
-            className={({ isActive }) =>
-              isActive || (location.pathname === "/" && item.href === "/projects")
-                ? "active"
-                : undefined
-            }
+            className={({ isActive }) => (isActive ? "active" : undefined)}
             onClick={() => setIsOpen(false)}
           >
             {item.label}
@@ -91,115 +97,132 @@ function Header() {
           <GitHubMark size={20} />
         </a>
       </nav>
-      <span className="route-sentinel" aria-hidden="true">
-        {location.pathname}
-      </span>
     </header>
   );
 }
 
 function HomePage() {
-  return <Hero />;
+  const featured = projectTimelineItems
+    .slice(0, 3)
+    .flatMap((item) => projects.filter((project) => project.slug === item.projectSlug));
+
+  return (
+    <>
+      <Hero />
+      <section className="section" aria-labelledby="featured-title">
+        <div className="section-head">
+          <p className="eyebrow">Selected work</p>
+          <h2 id="featured-title">Things I built, ran, and learned from.</h2>
+          <Link className="text-link" to="/projects">
+            All projects <MoveRight size={16} />
+          </Link>
+        </div>
+        <ol className="work-list">
+          {featured.map((project, index) => (
+            <WorkRow key={project.slug} project={project} index={index + 1} />
+          ))}
+        </ol>
+      </section>
+      <section className="section" aria-labelledby="focus-title">
+        <div className="section-head">
+          <p className="eyebrow">Focus</p>
+          <h2 id="focus-title">What I work with, and how.</h2>
+        </div>
+        <div className="focus-grid">
+          <TagGroup title="Tech" items={heroTechStackItems} />
+          <TagGroup title="Focus" items={professionalFocusItems} />
+          <TagGroup title="Ways of working" items={workingMethodItems} />
+        </div>
+      </section>
+    </>
+  );
 }
 
 function Hero() {
   return (
-    <section className="hero-section" aria-labelledby="hero-title">
-      <div className="hero-image" aria-hidden="true" />
-      <div className="hero-vignette" aria-hidden="true" />
-      <div className="hero-content">
-        <div className="hero-copy">
-          <h1 id="hero-title">
-            Crome<span>696</span>
-          </h1>
-          <p className="hero-headline">{profile.headline}</p>
-          <p className="hero-summary">{profile.summary}</p>
-          <div className="hero-actions" aria-label="Primary actions">
-            <Link className="button button-primary" to="/projects">
-              View projects <MoveRight size={18} />
-            </Link>
-            <a
-              className="button button-secondary"
-              href={profile.socials[0].href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <GitHubMark size={18} /> GitHub
-            </a>
-          </div>
-        </div>
-        <aside className="hero-panel" aria-label="Profile overview">
-          <section className="overview-section">
-            <h2>Profile</h2>
-            <dl className="profile-facts">
-              <div>
-                <dt>Name</dt>
-                <dd>{profile.name}</dd>
-              </div>
-              <div>
-                <dt>Role</dt>
-                <dd>{profile.role}</dd>
-              </div>
-            </dl>
-          </section>
-          <OverviewList title="Tech Stack" items={heroTechStackItems} />
-          <OverviewList title="Purpose / Professional Focus" items={professionalFocusItems} />
-          <OverviewList title="Methods / Ways of Working" items={workingMethodItems} />
-        </aside>
+    <section className="hero" aria-labelledby="hero-title">
+      <p className="eyebrow">
+        <span className="status-dot" aria-hidden="true" />
+        {profile.role} · {profile.location}
+      </p>
+      <h1 id="hero-title">
+        Hi, I'm {profile.name}.
+        <br />
+        <span className="hero-accent">{profile.handle}</span> online.
+      </h1>
+      <p className="hero-summary">
+        {profile.headline} {profile.summary}
+      </p>
+      <div className="hero-actions">
+        <Link className="button button-primary" to="/projects">
+          View projects <MoveRight size={18} />
+        </Link>
+        <a
+          className="button button-secondary"
+          href={profile.socials[0].href}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <GitHubMark size={18} /> GitHub
+        </a>
       </div>
     </section>
   );
 }
 
-function OverviewList({ title, items }: { title: string; items: string[] }) {
+function TagGroup({ title, items }: { title: string; items: string[] }) {
   return (
-    <section className="overview-section">
-      <h2>{title}</h2>
-      <ul className="overview-list">
+    <div className="tag-group">
+      <h3>{title}</h3>
+      <ul>
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
       </ul>
-    </section>
+    </div>
+  );
+}
+
+function WorkRow({ project, index }: { project: Project; index: number }) {
+  return (
+    <li className={`work-row accent-${project.accent}`}>
+      <Link
+        className="work-link"
+        to={`/projects/${project.slug}`}
+        state={{ fromProjects: false }}
+      >
+        <span className="work-index">{String(index).padStart(2, "0")}</span>
+        <span className="work-main">
+          <span className="work-title">{project.title}</span>
+          <span className="work-summary">{project.summary}</span>
+        </span>
+        <span className="work-meta">
+          <span>{project.category}</span>
+          <span>{project.period}</span>
+        </span>
+        <MoveRight className="work-arrow" size={20} aria-hidden="true" />
+      </Link>
+    </li>
   );
 }
 
 function ProjectsPage() {
   return (
     <PageShell
-      eyebrow="// projects"
-      title="Selected projects"
-      summary="A focused overview of engineering work across game-server operations, client scripting, external APIs, Windows automation research, and media tooling."
+      eyebrow="Projects"
+      title="Projects, newest first."
+      summary="Engineering work across game-server operations, client scripting, external APIs, Windows automation research, and media tooling."
     >
-      <section className="projects-stage" aria-label="Project timeline and case studies">
-        <ProjectTimelineShowcase />
-      </section>
-    </PageShell>
-  );
-}
-
-function ProjectTimelineShowcase() {
-  return (
-    <section className="project-timeline" aria-label="Project timeline">
-      <div className="project-timeline-track">
+      <div className="project-grid">
         {projectTimelineItems.map((item) => {
           const project = projects.find((candidate) => candidate.slug === item.projectSlug);
 
-          if (!project) {
-            return null;
-          }
-
-          return (
-            <div className={`project-timeline-row accent-${project.accent}`} key={item.projectSlug}>
-              <div className="project-timeline-marker">
-                <time>{item.period}</time>
-              </div>
-              <ProjectCard project={project} prominent />
-            </div>
-          );
+          return project ? (
+            <ProjectCard key={project.slug} project={project} period={item.period} />
+          ) : null;
         })}
       </div>
-    </section>
+    </PageShell>
   );
 }
 
@@ -297,8 +320,8 @@ function ProjectDetailPage() {
 function ProfilePage() {
   return (
     <PageShell
-      eyebrow="// profile"
-      title={`${profile.name} aka ${profile.handle}`}
+      eyebrow="Profile"
+      title={`${profile.name}, aka ${profile.handle}`}
       summary="Tech Lead in the international financial services sector, AI enthusiast, problem solver, and lifelong learner."
     >
       <div className="profile-story">
@@ -314,26 +337,17 @@ function ProfilePage() {
           decisions, and continuously improving how software is built.
         </p>
       </div>
-      <div className="profile-layout">
+      <div className="card-grid">
         {profileSections.map((section) => (
-          <section className="profile-card" key={section.title}>
+          <section className="card" key={section.title}>
             <section.icon size={22} />
             <h2>{section.title}</h2>
             <p>{section.copy}</p>
           </section>
         ))}
       </div>
-      <ProfileListSection
-        eyebrow="// what i do"
-        title="What I Do"
-        items={whatIDoItems}
-      />
-      <ProfileListSection
-        eyebrow="// beyond code"
-        title="Beyond Code"
-        items={beyondCodeItems}
-        compact
-      />
+      <ProfileListSection eyebrow="What I do" title="What I Do" items={whatIDoItems} />
+      <ProfileListSection eyebrow="Beyond code" title="Beyond Code" items={beyondCodeItems} />
     </PageShell>
   );
 }
@@ -341,13 +355,13 @@ function ProfilePage() {
 function StackPage() {
   return (
     <PageShell
-      eyebrow="// stack"
-      title="Leadership, architecture, and practical engineering"
+      eyebrow="Stack"
+      title="Leadership, architecture, and practical engineering."
       summary="A working focus shaped by technical leadership, maintainable systems, AI-supported experimentation, and product value."
     >
-      <div className="stack-grid">
+      <div className="card-grid">
         {stackItems.map((item) => (
-          <article className="stack-card" key={item.label}>
+          <article className="card" key={item.label}>
             <item.icon size={22} />
             <h2>{item.label}</h2>
             <p>{item.description}</p>
@@ -362,27 +376,27 @@ function ProfileListSection({
   eyebrow,
   title,
   items,
-  compact = false,
 }: {
   eyebrow: string;
   title: string;
   items: Array<{ title: string; copy: string }>;
-  compact?: boolean;
 }) {
+  const id = title.toLowerCase().replace(/\s/g, "-");
+
   return (
-    <section className="profile-section" aria-labelledby={title.toLowerCase().replace(/\s/g, "-")}>
-      <div className="profile-section-heading">
-        <p className="section-code">{eyebrow}</p>
-        <h2 id={title.toLowerCase().replace(/\s/g, "-")}>{title}</h2>
+    <section className="list-section" aria-labelledby={id}>
+      <div className="list-section-head">
+        <p className="eyebrow">{eyebrow}</p>
+        <h2 id={id}>{title}</h2>
       </div>
-      <div className={compact ? "profile-list-grid is-compact" : "profile-list-grid"}>
+      <dl className="list-section-items">
         {items.map((item) => (
-          <article className="profile-list-item" key={item.title}>
-            <h3>{item.title}</h3>
-            <p>{item.copy}</p>
-          </article>
+          <div key={item.title}>
+            <dt>{item.title}</dt>
+            <dd>{item.copy}</dd>
+          </div>
         ))}
-      </div>
+      </dl>
     </section>
   );
 }
@@ -401,7 +415,7 @@ function PageShell({
   return (
     <section className="page-shell" aria-labelledby="page-title">
       <div className="page-hero">
-        <p className="section-code">{eyebrow}</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h1 id="page-title">{title}</h1>
         <p>{summary}</p>
       </div>
@@ -410,13 +424,7 @@ function PageShell({
   );
 }
 
-function ProjectCard({
-  project,
-  prominent = false,
-}: {
-  project: Project;
-  prominent?: boolean;
-}) {
+function ProjectCard({ project, period }: { project: Project; period: string }) {
   return (
     <article className={`project-card accent-${project.accent}`}>
       <Link
@@ -424,22 +432,18 @@ function ProjectCard({
         to={`/projects/${project.slug}`}
         state={{ fromProjects: true }}
         aria-label={`Open ${project.title} project`}
-      >
-        <span className="sr-only">Open {project.title} project</span>
-      </Link>
+      />
       <ProjectImageFrame image={project.image} title={project.title} />
       <div className="project-body">
-        <p>{project.category}</p>
+        <p className="project-meta">
+          <span>{project.category}</span>
+          <span>{period}</span>
+        </p>
         <h3>{project.title}</h3>
         <p>{project.summary}</p>
-      </div>
-      <div className="project-card-footer">
         <span className="project-card-cta" aria-hidden="true">
-          {prominent ? "Open case study" : "View details"} <MoveRight size={16} />
+          View case study <MoveRight size={16} />
         </span>
-        <a href={profile.socials[0].href} target="_blank" rel="noreferrer" aria-label="GitHub">
-          <GitHubMark size={18} />
-        </a>
       </div>
     </article>
   );
@@ -470,8 +474,10 @@ function SmartLink({
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>Crome696</p>
-      <p>2004-2026 - Crome696</p>
+      <p>crome696 · {new Date().getFullYear()}</p>
+      <a href={profile.socials[0].href} target="_blank" rel="noreferrer">
+        GitHub <ExternalLink size={14} />
+      </a>
     </footer>
   );
 }
